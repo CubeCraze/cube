@@ -10,6 +10,7 @@
   import Nav from '$lib/components/Nav.svelte'
   import '../app.css'
 
+
   export let data
 
   $: currentPage = $page.url.pathname.split('/')[1]
@@ -39,11 +40,12 @@
 
 <style>
   main {
-    max-width: 48rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin: 2rem auto;
-  }
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  padding-bottom: 10rem; /* Add padding to prevent content from being hidden behind the nav */
+}
 </style>

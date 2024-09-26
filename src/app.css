@@ -47,19 +47,25 @@
   --pt-placeholder: #f5f0ff4d;
 }
 
+
 html {
-  min-height: 100vh;
+  height: 100%; 
   font-family: 'Inter';
   font-feature-settings: 'calt' off;
   color: var(--pt-purple-50);
   background-color: var(--pt-bg-purple-darker);
   background-image: url('/background.svg');
   background-repeat: no-repeat;
+  margin: 0;
 }
 
 body {
-  margin: 0;
+  background-color: #1e1e1e;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; /* Adjust this to ensure the image fits the page properly */
 }
+
 
 h1,
 h2,

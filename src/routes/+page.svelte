@@ -1,5 +1,7 @@
 <script>
   import DepositCard from '$lib/components/deposit/DepositCard.svelte'
+  import '../app.css';
+
 </script>
 
 <div class="banner">

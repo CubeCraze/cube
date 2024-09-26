@@ -14,13 +14,13 @@
 
   // Liquidation pair info
   let liquidationPairs = [
-    { name: 'moonwell usdc', ...MOONWELL_USDC },
-    { name: 'aave weth', ...AAVE_WETH },
-    { name: 'moonwell aero', ...MOONWELL_AERO },
-    { name: 'moonwell wsteth', ...MOONWELL_WSTETH },
-    { name: 'moonwell cbeth', ...MOONWELL_CBETH },
-    { name: 'beefy wethwell', ...BEEFY_WETH_WELL },
-    { name: 'angle usda', ...ANGLE_USDA }
+    { name: 'moonwell usdc', decimals: 6, ...MOONWELL_USDC },
+    { name: 'aave weth', decimals: 18, ...AAVE_WETH },
+    { name: 'moonwell aero', decimals: 18, ...MOONWELL_AERO },
+    { name: 'moonwell wsteth', decimals: 18, ...MOONWELL_WSTETH },
+    { name: 'moonwell cbeth', decimals: 18, ...MOONWELL_CBETH },
+    { name: 'beefy wethwell', decimals: 18, ...BEEFY_WETH_WELL },
+    { name: 'angle usda', decimals: 6, ...ANGLE_USDA }
   ];
 
   // Define the expected result type from the function
@@ -34,14 +34,16 @@
     inValueWeth: 0n, // WETH input value
     outValueToken: 0n, // Vault token output value
     name: pair.name,
-    liquidationPair: pair.liquidationPair as Address
+    liquidationPair: pair.liquidationPair as Address,
+    decimals: pair.decimals // Token decimals
   }));
 
   // Fetch the WETH In/Out values using real contract data
   const fetchLiquidationData = async () => {
     for (let i = 0; i < vaultInfo.length; i++) {
       try {
-        const result: QuoteResult = await getWethInputOutput(vaultInfo[i].liquidationPair, 100000n);
+        const amountOut = BigInt(1 * 10 ** vaultInfo[i].decimals); // 1 token out with correct decimals
+        const result: QuoteResult = await getWethInputOutput(vaultInfo[i].liquidationPair, amountOut);
         vaultInfo[i].inValueWeth = result.amountIn;
         vaultInfo[i].outValueToken = result.amountOut;
       } catch (err) {
@@ -52,6 +54,8 @@
 
   onMount(() => {
     fetchLiquidationData();
+    const interval = setInterval(fetchLiquidationData, 60_000); // Refresh every 60 seconds
+    return () => clearInterval(interval); // Clean up on component unmount
   });
 </script>
 
@@ -63,7 +67,6 @@
     position: relative;
     margin-top: 30px;
   }
-
 
   .prizepool {
     display: flex;
@@ -175,15 +178,15 @@
       <div class="fireworks">
         <!-- In WETH and Out Token values above the box -->
         <div class="info">
-          <div>WETH In: {info.inValueWeth.toString()}</div>
-          <div>Out: {info.outValueToken.toString()}</div>
+          <div>WETH In: { (Number(info.inValueWeth) / 1e18).toFixed(6) } WETH</div>
+          <div>Out: { (Number(info.outValueToken) / Math.pow(10, info.decimals)).toFixed(6) } {info.name.toUpperCase()}</div>
         </div>
 
         <!-- The colored box above the cannon -->
-        <div class="box {info.name.replace(' ', '-')}"></div>
+        <div class="box {info.name.replace(/ /g, '-')}"></div>
 
         <!-- Cannon below the box with a colored top matching the box -->
-        <div class="cannon {info.name.replace(' ', '-')}">
+        <div class="cannon {info.name.replace(/ /g, '-')}">
           <div class="cannon-top"></div>
         </div>
 

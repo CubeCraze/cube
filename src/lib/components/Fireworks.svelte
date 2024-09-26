@@ -63,7 +63,7 @@
   .fireworks-container {
     display: flex;
     flex-direction: column; 
-    width: 100%;
+    width: 180%;
     position: relative;
     margin-top: 30px;
   }

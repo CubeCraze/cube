@@ -14,13 +14,13 @@
 
   // Liquidation pair info
   let liquidationPairs = [
-    { name: 'moonwell usdc', decimals: 6, ...MOONWELL_USDC },
-    { name: 'aave weth', decimals: 18, ...AAVE_WETH },
-    { name: 'moonwell aero', decimals: 18, ...MOONWELL_AERO },
-    { name: 'moonwell wsteth', decimals: 18, ...MOONWELL_WSTETH },
-    { name: 'moonwell cbeth', decimals: 18, ...MOONWELL_CBETH },
-    { name: 'beefy wethwell', decimals: 18, ...BEEFY_WETH_WELL },
-    { name: 'angle usda', decimals: 6, ...ANGLE_USDA }
+    { name: 'moonwell usdc', ...MOONWELL_USDC },
+    { name: 'aave weth', ...AAVE_WETH },
+    { name: 'moonwell aero', ...MOONWELL_AERO },
+    { name: 'moonwell wsteth', ...MOONWELL_WSTETH },
+    { name: 'moonwell cbeth', ...MOONWELL_CBETH },
+    { name: 'beefy wethwell', ...BEEFY_WETH_WELL },
+    { name: 'angle usda', ...ANGLE_USDA }
   ];
 
   // Define the expected result type from the function
@@ -45,7 +45,7 @@
         const amountOut = BigInt(1 * 10 ** vaultInfo[i].decimals); // 1 token out with correct decimals
         const result: QuoteResult = await getWethInputOutput(vaultInfo[i].liquidationPair, amountOut);
         vaultInfo[i].inValueWeth = result.amountIn;
-        vaultInfo[i].outValueToken = result.amountOut;
+        vaultInfo[i].outValueToken = amountOut;
       } catch (err) {
         console.error(`Error fetching data for ${vaultInfo[i].name}:`, err);
       }
@@ -86,16 +86,20 @@
   /* Liquidation Pair Boxes */
   .pairs-container {
     display: flex;
+    flex-wrap: nowrap; /* Prevent items from wrapping */
     justify-content: space-around;
     width: 100%;
-    max-width: 1000px;
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
     margin-bottom: 50px;
   }
 
   .fireworks {
+    flex: 0 0 auto; /* Prevent items from shrinking */
+    width: 120px; /* Adjust width as needed */
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 10px; /* Added margin for better spacing */
   }
 
   .box {
@@ -113,7 +117,7 @@
   }
 
   .name {
-    font-size: 20px;
+    font-size: 16px;
     color: white;
     text-align: center;
     margin-top: 5px;
@@ -167,7 +171,7 @@
   }
 </style>
 
-<div class="prizepool-container">
+<div class="fireworks-container">
   <div class="prizepool">
     <div class="prizepool-box"></div>
   </div>
@@ -178,8 +182,8 @@
       <div class="fireworks">
         <!-- In WETH and Out Token values above the box -->
         <div class="info">
-          <div>WETH In: { (Number(info.inValueWeth) / 1e18).toFixed(6) } WETH</div>
-          <div>Out: { (Number(info.outValueToken) / Math.pow(10, info.decimals)).toFixed(6) } {info.name.toUpperCase()}</div>
+          <div>WETH In: { (Number(info.inValueWeth) / 1e18).toFixed(6) }</div>
+          <div>Out: 1 {info.name.toUpperCase()}</div>
         </div>
 
         <!-- The colored box above the cannon -->
